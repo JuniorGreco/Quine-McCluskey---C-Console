@@ -19,3 +19,10 @@ C:\Users\junio\Desktop\Atualizado_2\quine\quine\obj\Debug\quine.csprojAssemblyRe
 C:\Users\junio\Desktop\Atualizado_2\quine\quine\obj\Debug\quine.csproj.CoreCompileInputs.cache
 C:\Users\junio\Desktop\Atualizado_2\quine\quine\obj\Debug\quine.exe
 C:\Users\junio\Desktop\Atualizado_2\quine\quine\obj\Debug\quine.pdb
+C:\Users\pnjunior\Desktop\QuineMcCluskey\quine\bin\Debug\quine.exe.config
+C:\Users\pnjunior\Desktop\QuineMcCluskey\quine\bin\Debug\quine.exe
+C:\Users\pnjunior\Desktop\QuineMcCluskey\quine\bin\Debug\quine.pdb
+C:\Users\pnjunior\Desktop\QuineMcCluskey\quine\obj\Debug\quine.csprojResolveAssemblyReference.cache
+C:\Users\pnjunior\Desktop\QuineMcCluskey\quine\obj\Debug\quine.csproj.CoreCompileInputs.cache
+C:\Users\pnjunior\Desktop\QuineMcCluskey\quine\obj\Debug\quine.exe
+C:\Users\pnjunior\Desktop\QuineMcCluskey\quine\obj\Debug\quine.pdb

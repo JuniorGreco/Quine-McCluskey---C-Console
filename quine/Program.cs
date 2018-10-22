@@ -900,85 +900,117 @@ namespace quine
             return false;
         }
 
-        private static void FazerTabelaCobertura(List<Mintermo> Mintermos, List<Coluna> ExpressoesResultado)
+        private static List<int> FazerTabelaCobertura(List<Mintermo> Mintermos, List<Coluna> ExpressoesResultado)
         {
-            List<Mintermo> MintermosPrimos = new List<Mintermo>();
-            List<Mintermo> DontCares = new List<Mintermo>();
+            List<int> TabelaCobertura = new List<int>();
+            Boolean estaCoberto = false;
 
-            List<string> ResultadoFinal = new List<string>();
-
-            foreach (var mintermo in Mintermos)
+            foreach (var expressao in ExpressoesResultado)
             {
-                if (mintermo.Valor == 1)
+                foreach (var mintermo in expressao.Mintermos)
                 {
-                    MintermosPrimos.Add(mintermo);
-                }
-                else if (mintermo.Valor == 2)
-                {
-                    DontCares.Add(mintermo);
+                    foreach (var mintermoCoberto in TabelaCobertura)
+                    {
+                        if (mintermo == mintermoCoberto)
+                            estaCoberto = true;
+                    }
+
+                    if (estaCoberto == false)
+                    {
+                        if (Mintermos[mintermo].Valor == 1)
+                            TabelaCobertura.Add(mintermo);
+                    }
+
                 }
             }
 
-            for (int i = 0; i < ExpressoesResultado.Count; i++)
+            List<int> DontCares = new List<int>();
+
+            Boolean ehDontCare = true;
+            foreach (var expressao in ExpressoesResultado)
             {
-                ExpressoesResultado[i].QuantidadePrimos = ExpressoesResultado[i].Mintermos.Count;
-
-                foreach (var Mintermo in ExpressoesResultado[i].Mintermos)
+                foreach (var mintermo in expressao.Mintermos)
                 {
-                    Int16 contador = 0;
-
-                    foreach (var expressoes in ExpressoesResultado)
+                    ehDontCare = true;
+                    foreach (var mintermoCobertura in TabelaCobertura)
                     {
-                        foreach (var MintermoAux in expressoes.Mintermos)
+                        if (mintermo == mintermoCobertura)
+                            ehDontCare = false;
+                    }
+
+                    if (ehDontCare == true)
+                    {
+                        if (!DontCares.Contains(mintermo))
+                        DontCares.Add(mintermo);
+                    }
+                }
+                
+            }
+
+            Boolean terminouDontCares = false;
+            Boolean terminouFor = false;
+
+            var contador = 0;
+
+            while (terminouDontCares == false)
+            {
+                contador = 0;
+
+                foreach (var expressao in ExpressoesResultado)
+                {
+                    foreach (var mintermo in expressao.Mintermos)
+                    {
+                        terminouFor = false;
+                        foreach (var dontCare in DontCares)
                         {
-                            if (Mintermo == MintermoAux && ProcurarMintermo(MintermosPrimos, Mintermo))
+                            if (mintermo == dontCare)
                             {
+                                expressao.Mintermos.Remove(mintermo);
+                                terminouFor = true;
                                 contador += 1;
+                                break;
                             }
                         }
-                    }
 
-                    if (contador == 1)
-                    {
-                        ExpressoesResultado[i].MintermosPrimosEssenciais.Add(Mintermo);
-                        ExpressoesResultado[i].QuantidadePrimosEssenciais += 1;
+                        if (terminouFor)
+                            break;
                     }
                 }
+
+                if (contador == 0)
+                    terminouDontCares = true;
+
             }
 
-            Coluna expressaoAux = new Coluna();
-            foreach (var item in ExpressoesResultado)
+            List<Coluna> Conjuntos = new List<Coluna>();
+            Boolean ehMaior = true;
+
+            while (ExpressoesResultado.Count > 0)
             {
-                Console.WriteLine("Finalmente: " + item.Variaveis);
-            }
-            for (int i = 0; i < ExpressoesResultado.Count; i++)
-            {
-                for (int j = 0; j < ExpressoesResultado.Count; j++)
+                foreach (var expressao in ExpressoesResultado)
                 {
-                    if (ExpressoesResultado[i].QuantidadePrimosEssenciais < ExpressoesResultado[j].QuantidadePrimosEssenciais && ExpressoesResultado[i].QuantidadePrimos < ExpressoesResultado[j].QuantidadePrimos)
-                    {
-                        expressaoAux = ExpressoesResultado[j];
-                        ExpressoesResultado[j] = ExpressoesResultado[i];
-                        ExpressoesResultado[i] = expressaoAux;
+                    ehMaior = true;
 
+                    foreach (var expressaoAux in ExpressoesResultado)
+                    {
+                        if (expressao.Mintermos.Count < expressaoAux.Mintermos.Count)
+                            ehMaior = false;
+
+                    }
+                    
+                    if (ehMaior == true)
+                    {
+                        Conjuntos.Add(expressao);
+                        ExpressoesResultado.Remove(expressao);
+                        break;
                     }
                 }
             }
 
-            foreach (var item in ExpressoesResultado)
-            {
-                Console.WriteLine("Finalmente: " + item.Variaveis);
-            }
+            ExpressoesResultado = Conjuntos;
+            TabelaCobertura.Sort();
 
-            //foreach (var expressao in ExpressoesResultado)
-            //{
-            //    expressao.QuantidadePrimos = expressao.Mintermos.Count;
-
-            //    foreach (var mintermo in expressao.Mintermos)
-            //    {
-
-            //    }
-            //}
+            return TabelaCobertura;
         }
 
         private static void QuineMcCluskey(List<Mintermo> Mintermos, List<List<Mintermo>> MatrizMintermos)
@@ -993,7 +1025,8 @@ namespace quine
 
             FazerColunas(MatrizMintermos, MatrizColunas);
 
-            FazerTabelaCobertura(Mintermos, ExpressoesResultado);
+            List <int> TabelaCobertura = FazerTabelaCobertura(Mintermos, ExpressoesResultado);
+            
         }
     }
 }
