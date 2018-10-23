@@ -879,28 +879,15 @@ namespace quine
                     {
                         if (!item.Marcado)
                         {
-                            Console.WriteLine("Transportando.. para a tabela de cobertura: " + item.Variaveis);
+                            Console.WriteLine("Transportando para a tabela de cobertura: " + item.Variaveis);
                             ExpressoesResultado.Add(item);
                         }
                     }
                 }
             }
         }
-
-        private static bool ProcurarMintermo(List<Mintermo> lista, int valor)
-        {
-            foreach (var mintermo in lista)
-            {
-                if (valor == mintermo.Posicao)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static List<int> FazerTabelaCobertura(List<Mintermo> Mintermos, List<Coluna> ExpressoesResultado)
+        
+        private static List<int> FazerTabelaCobertura(List<Mintermo> Mintermos, ref List<Coluna> ExpressoesResultado)
         {
             List<int> TabelaCobertura = new List<int>();
             Boolean estaCoberto = false;
@@ -1013,6 +1000,31 @@ namespace quine
             return TabelaCobertura;
         }
 
+        private static void FinalizarAlgoritmo(List<int> TabelaCobertura, List<Coluna>ExpressoesResultado)
+        {
+            foreach (var expressao in ExpressoesResultado)
+            {
+                foreach (var mintermo in expressao.Mintermos)
+                {
+                    if (TabelaCobertura.Contains(mintermo))
+                    {
+                        expressao.Marcado = true;
+                        TabelaCobertura.Remove(mintermo);
+                    }
+                }
+            }
+
+            Console.WriteLine("Resultado final:");
+            
+            foreach (var expressao in ExpressoesResultado)
+            {
+                if (expressao.Marcado)
+                {
+                    Console.WriteLine(expressao.Variaveis);
+                }
+            }
+        }
+
         private static void QuineMcCluskey(List<Mintermo> Mintermos, List<List<Mintermo>> MatrizMintermos)
         {
             List<List<List<Coluna>>> MatrizColunas = new List<List<List<Coluna>>>();
@@ -1025,8 +1037,12 @@ namespace quine
 
             FazerColunas(MatrizMintermos, MatrizColunas);
 
-            List <int> TabelaCobertura = FazerTabelaCobertura(Mintermos, ExpressoesResultado);
-            
+            List <int> TabelaCobertura = FazerTabelaCobertura(Mintermos,ref ExpressoesResultado);
+
+            Console.WriteLine();
+            Console.WriteLine();
+
+            FinalizarAlgoritmo(TabelaCobertura, ExpressoesResultado);
         }
     }
 }
