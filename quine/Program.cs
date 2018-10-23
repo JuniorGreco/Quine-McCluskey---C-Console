@@ -13,6 +13,10 @@ namespace quine
 
         static void Main(string[] args)
         {
+            ArquivoTXT arquivo = new ArquivoTXT(@"\MapaKarnaugh.txt");
+
+            var ListaMintermos = arquivo.CarregarMintermos();
+
             List<Mintermo> Mintermos = new List<Mintermo>();
 
             Mintermos = PopularMintermos(Mintermos);
