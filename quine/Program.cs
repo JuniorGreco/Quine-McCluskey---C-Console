@@ -8,89 +8,31 @@ namespace quine
 {
     class Program
     {
-        static Int16 numVariaveis = 5;
+        static int numVariaveis;
         static List<Coluna> ExpressoesResultado;
 
         static void Main(string[] args)
         {
-            ArquivoTXT arquivo = new ArquivoTXT(@"\MapaKarnaugh.txt");
+            List<Mintermo> ListaMintermos = CarregarMintermosDoTXT();
+            
+            //List<List<Mintermo>> MatrizMintermos = new List<List<Mintermo>>();
 
-            var ListaMintermos = arquivo.CarregarMintermos();
-
-            List<Mintermo> Mintermos = new List<Mintermo>();
-
-            Mintermos = PopularMintermos(Mintermos);
-
-            List<List<Mintermo>> MatrizMintermos = new List<List<Mintermo>>();
-
-            CriarMatrizMintermos(MatrizMintermos);
-
-            QuineMcCluskey(Mintermos, MatrizMintermos);
-
+            //CriarMatrizMintermos(MatrizMintermos);
+            
+            QuineMcCluskey(ListaMintermos);
+            
             Console.ReadLine();
         }
-
-        private static List<Mintermo> PopularMintermos(List<Mintermo> mintermos)
+        
+        public static List<Mintermo> CarregarMintermosDoTXT()
         {
-            for (int i = 0; i < 32; i++)
-            {
-                Mintermo mintermo = new Mintermo();
+            ArquivoTXT arquivo = new ArquivoTXT(@"\MapaKarnaugh.txt");
 
-                mintermo.Valor = 0;
-                mintermo.Posicao = i;
+            List<Mintermo> ListaMintermos = arquivo.CarregarMintermos();
 
-                mintermos.Add(mintermo);
-            }
+            numVariaveis = arquivo.PegarNumeroVariaveis();
 
-            mintermos[0].Valor = 1;
-            mintermos[4].Valor = 1;
-            mintermos[8].Valor = 1;
-            mintermos[12].Valor = 1;
-            mintermos[16].Valor = 1;
-            mintermos[17].Valor = 2;
-            mintermos[19].Valor = 1;
-            mintermos[20].Valor = 1;
-            mintermos[21].Valor = 2;
-            mintermos[24].Valor = 1;
-            mintermos[25].Valor = 2;
-            mintermos[27].Valor = 1;
-            mintermos[28].Valor = 1;
-            mintermos[29].Valor = 2;
-
-            mintermos[0].Variaveis = "00000";
-            mintermos[1].Variaveis = "00001";
-            mintermos[2].Variaveis = "00010";
-            mintermos[3].Variaveis = "00011";
-            mintermos[4].Variaveis = "00100";
-            mintermos[5].Variaveis = "00101";
-            mintermos[6].Variaveis = "00110";
-            mintermos[7].Variaveis = "00111";
-            mintermos[8].Variaveis = "01000";
-            mintermos[9].Variaveis = "01001";
-            mintermos[10].Variaveis = "01010";
-            mintermos[11].Variaveis = "01011";
-            mintermos[12].Variaveis = "01100";
-            mintermos[13].Variaveis = "01101";
-            mintermos[14].Variaveis = "01110";
-            mintermos[15].Variaveis = "01111";
-            mintermos[16].Variaveis = "10000";
-            mintermos[17].Variaveis = "10001";
-            mintermos[18].Variaveis = "10010";
-            mintermos[19].Variaveis = "10011";
-            mintermos[20].Variaveis = "10100";
-            mintermos[21].Variaveis = "10101";
-            mintermos[22].Variaveis = "10110";
-            mintermos[23].Variaveis = "10111";
-            mintermos[24].Variaveis = "11000";
-            mintermos[25].Variaveis = "11001";
-            mintermos[26].Variaveis = "11010";
-            mintermos[27].Variaveis = "11011";
-            mintermos[28].Variaveis = "11100";
-            mintermos[29].Variaveis = "11101";
-            mintermos[30].Variaveis = "11110";
-            mintermos[31].Variaveis = "11111";
-
-            return mintermos;
+            return ListaMintermos;
         }
 
         private static void CriarMatrizMintermos(List<List<Mintermo>> MatrizMintermos)
@@ -1029,8 +971,12 @@ namespace quine
             }
         }
 
-        private static void QuineMcCluskey(List<Mintermo> Mintermos, List<List<Mintermo>> MatrizMintermos)
+        private static void QuineMcCluskey(List<Mintermo> Mintermos)
         {
+            List<List<Mintermo>> MatrizMintermos = new List<List<Mintermo>>();
+
+            CriarMatrizMintermos(MatrizMintermos);
+
             List<List<List<Coluna>>> MatrizColunas = new List<List<List<Coluna>>>();
 
             CriarMatrizColunas(MatrizColunas);
