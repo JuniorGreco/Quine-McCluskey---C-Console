@@ -102,12 +102,12 @@ namespace quine
                 }
             }
             
-            ImprimirColunasOnSet(MatrizColunasUns); /* Imprime as Colunas de Uns */
+            ImprimirColunasUns(MatrizColunasUns); /* Imprime as Colunas de Uns */
 
             return MatrizColunasUns;
         }
 
-        private static void ImprimirColunasOnSet(List<List<Mintermo>> MatrizMintermos)
+        private static void ImprimirColunasUns(List<List<Mintermo>> MatrizMintermos)
         {
             foreach (var mintermo in MatrizMintermos[0])
             {
