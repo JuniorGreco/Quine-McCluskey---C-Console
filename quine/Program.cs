@@ -15,10 +15,6 @@ namespace quine
         {
             List<Mintermo> ListaMintermos = CarregarMintermosDoTXT();
             
-            //List<List<Mintermo>> MatrizMintermos = new List<List<Mintermo>>();
-
-            //CriarMatrizMintermos(MatrizMintermos);
-            
             QuineMcCluskey(ListaMintermos);
             
             Console.ReadLine();
@@ -35,71 +31,83 @@ namespace quine
             return ListaMintermos;
         }
 
-        private static void CriarMatrizMintermos(List<List<Mintermo>> MatrizMintermos)
+        private static List<List<Mintermo>> CriarMatrizMintermos()
         {
+            List<List<Mintermo>> MatrizMintermos = new List<List<Mintermo>>();
+
             for (int i = 0; i <= numVariaveis; i++)
             {
                 List<Mintermo> listaColunas = new List<Mintermo>();
 
                 MatrizMintermos.Add(listaColunas);
             }
+
+            return MatrizMintermos;
         }
 
-        private static void CriarMatrizColunas(List<List<List<Coluna>>> MatrizColunas)
+        private static List<List<List<Coluna>>> CriarMatrizColunas()
         {
+            List<List<List<Coluna>>> MatrizColunasComparacao = new List<List<List<Coluna>>>();
+
             for (int i = 0; i < numVariaveis; i++)
             {
                 List<List<Coluna>> listaColunas = new List<List<Coluna>>();
 
-                MatrizColunas.Add(listaColunas);
+                MatrizColunasComparacao.Add(listaColunas);
             }
+
+            return MatrizColunasComparacao;
         }
 
-        private static void SepararOnSet(List<Mintermo> mintermos, List<List<Mintermo>> MatrizMintermos)
+        private static List<List<Mintermo>> SepararColunasUns(List<Mintermo> Mintermos, List<List<Mintermo>> MatrizColunasUns)
         {
-            foreach (var mintermo in mintermos)
+            foreach (var mintermo in Mintermos)
             {
                 if (mintermo.Valor == 1 || mintermo.Valor == 2)
                 {
-                    Int16 contador = 0;
+                    short contadorUnsMintermo = 0;
 
                     foreach (char caracter in mintermo.Variaveis)
                     {
                         if (caracter == '1')
                         {
-                            contador += 1;
+                            contadorUnsMintermo += 1;
                         }
                     }
 
-                    if (contador == 0)
+                    if (contadorUnsMintermo == 0)
                     {
-                        MatrizMintermos[0].Add(mintermo);
+                        MatrizColunasUns[0].Add(mintermo);
                     }
-                    else if (contador == 1)
+                    else if (contadorUnsMintermo == 1)
                     {
-                        MatrizMintermos[1].Add(mintermo);
+                        MatrizColunasUns[1].Add(mintermo);
                     }
-                    else if (contador == 2)
+                    else if (contadorUnsMintermo == 2)
                     {
-                        MatrizMintermos[2].Add(mintermo);
+                        MatrizColunasUns[2].Add(mintermo);
                     }
-                    else if (contador == 3)
+                    else if (contadorUnsMintermo == 3)
                     {
-                        MatrizMintermos[3].Add(mintermo);
+                        MatrizColunasUns[3].Add(mintermo);
                     }
-                    else if (contador == 4)
+                    else if (contadorUnsMintermo == 4)
                     {
-                        MatrizMintermos[4].Add(mintermo);
+                        MatrizColunasUns[4].Add(mintermo);
                     }
-                    else if (contador == 5)
+                    else if (contadorUnsMintermo == 5)
                     {
-                        MatrizMintermos[5].Add(mintermo);
+                        MatrizColunasUns[5].Add(mintermo);
                     }
                 }
             }
+            
+            ImprimirColunasOnSet(MatrizColunasUns); /* Imprime as Colunas de Uns */
+
+            return MatrizColunasUns;
         }
 
-        private static void ImprimirConjuntoUns(List<List<Mintermo>> MatrizMintermos)
+        private static void ImprimirColunasOnSet(List<List<Mintermo>> MatrizMintermos)
         {
             foreach (var mintermo in MatrizMintermos[0])
             {
@@ -143,7 +151,7 @@ namespace quine
 
         }
 
-        private static void FazerColunas(List<List<Mintermo>> MatrizMintermos, List<List<List<Coluna>>> MatrizColunas)
+        private static void RodaAlgoritmo(List<List<Mintermo>> MatrizMintermos, List<List<List<Coluna>>> MatrizColunas)
         {
             List<Coluna> ColunaA1 = new List<Coluna>();
             List<Coluna> ColunaA2 = new List<Coluna>();
@@ -973,19 +981,13 @@ namespace quine
 
         private static void QuineMcCluskey(List<Mintermo> Mintermos)
         {
-            List<List<Mintermo>> MatrizMintermos = new List<List<Mintermo>>();
+            List<List<Mintermo>> MatrizColunasUns = CriarMatrizMintermos(); /* Aloca memória */
 
-            CriarMatrizMintermos(MatrizMintermos);
+            List<List<List<Coluna>>> MatrizColunasComparacao = CriarMatrizColunas(); /* Aloca memória */
 
-            List<List<List<Coluna>>> MatrizColunas = new List<List<List<Coluna>>>();
+            MatrizColunasUns = SepararColunasUns(Mintermos, MatrizColunasUns); /* Aloca memória */
 
-            CriarMatrizColunas(MatrizColunas);
-
-            SepararOnSet(Mintermos, MatrizMintermos);
-
-            ImprimirConjuntoUns(MatrizMintermos);
-
-            FazerColunas(MatrizMintermos, MatrizColunas);
+            RodaAlgoritmo(MatrizColunasUns, MatrizColunasComparacao);
 
             List <int> TabelaCobertura = FazerTabelaCobertura(Mintermos,ref ExpressoesResultado);
 
