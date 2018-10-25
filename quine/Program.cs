@@ -240,6 +240,9 @@ namespace quine
 
                                 if (contador == numeroDiferencas)
                                 {
+                                    ColunaMintermos.Marcado = true;
+                                    ColunaMintermosAux.Marcado = true;
+
                                     Coluna coluna = new Coluna();
                                     coluna.Variaveis = variaveisAux;
 
@@ -265,6 +268,7 @@ namespace quine
                                             coluna.Mintermos.Add(mintermoAux);
                                         }
 
+                                        //coluna.Marcado = true;
                                         MatrizColunasComparacao[i + 1][j].Add(coluna);
                                     }
                                 }
@@ -278,21 +282,29 @@ namespace quine
 
             ExpressoesResultado = new List<Coluna>();
 
-            //foreach (var listas in MatrizColunas)
-            //{
-            //    foreach (var mintermos in listas)
-            //    {
-            //        foreach (var item in mintermos)
-            //        {
-            //            if (!item.Marcado)
-            //            {
-            //                Console.WriteLine("Transportando para a tabela de cobertura: " + item.Variaveis);
-            //                ExpressoesResultado.Add(item);
-            //            }
-            //        }
-            //    }
-            //}
-            
+
+            Console.WriteLine();
+            Console.WriteLine("*******************************************************************");
+            Console.WriteLine("Expressões transportadas para Tabela de Cobertura");
+            Console.WriteLine("-------------------------------------------------------------------");
+            Console.WriteLine();
+
+            foreach (var listas in MatrizColunasComparacao)
+            {
+                foreach (var mintermos in listas)
+                {
+                    foreach (var item in mintermos)
+                    {
+                        if (!item.Marcado)
+                        {
+                            Console.WriteLine(item.Variaveis);
+                            ExpressoesResultado.Add(item);
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine("-------------------------------------------------------------------");
         }
         
         private static void ImprimirColunas(List<List<List<Coluna>>> MatrizColunasComparacao)
@@ -326,7 +338,7 @@ namespace quine
             }
         }
 
-        private static List<int> FazerTabelaCobertura(List<Mintermo> Mintermos, ref List<Coluna> ExpressoesResultado)
+        private static void MostrarTabelaCobertura(List<Mintermo> Mintermos, List<Coluna> ExpressoesResultado)
         {
             List<int> TabelaCobertura = new List<int>();
             Boolean estaCoberto = false;
@@ -346,7 +358,6 @@ namespace quine
                         if (Mintermos[mintermo].Valor == 1)
                             TabelaCobertura.Add(mintermo);
                     }
-
                 }
             }
 
@@ -405,7 +416,6 @@ namespace quine
 
                 if (contador == 0)
                     terminouDontCares = true;
-
             }
 
             List<Coluna> Conjuntos = new List<Coluna>();
@@ -436,7 +446,36 @@ namespace quine
             ExpressoesResultado = Conjuntos;
             TabelaCobertura.Sort();
 
-            return TabelaCobertura;
+            foreach (var expressao in ExpressoesResultado)
+            {
+                foreach (var mintermo in expressao.Mintermos)
+                {
+                    if (TabelaCobertura.Contains(mintermo))
+                    {
+                        expressao.Marcado = true;
+                        TabelaCobertura.Remove(mintermo);
+                    }
+                }
+            }
+
+            ImprimirExpressoesSimplificadas(ExpressoesResultado);
+        }
+
+        private static void ImprimirExpressoesSimplificadas(List<Coluna> ExpressoesResultado)
+        {
+            Console.WriteLine();
+            Console.WriteLine("*******************************************************************");
+            Console.WriteLine("Expressões simplificadas");
+            Console.WriteLine("-------------------------------------------------------------------");
+            Console.WriteLine();
+
+            foreach (var expressao in ExpressoesResultado)
+            {
+                if (expressao.Marcado)
+                {
+                    Console.WriteLine(expressao.Variaveis);
+                }
+            }
         }
 
         private static void FinalizarAlgoritmo(List<int> TabelaCobertura, List<Coluna> ExpressoesResultado)
@@ -453,7 +492,7 @@ namespace quine
                 }
             }
 
-            //Console.WriteLine("Resultado final:");
+            Console.WriteLine("Resultado final:");
 
             foreach (var expressao in ExpressoesResultado)
             {
@@ -474,11 +513,7 @@ namespace quine
 
             RodaAlgoritmo(MatrizColunasUns, MatrizColunasComparacao);
 
-            List<int> TabelaCobertura = FazerTabelaCobertura(Mintermos, ref ExpressoesResultado);
-
-            Console.WriteLine();
-
-            FinalizarAlgoritmo(TabelaCobertura, ExpressoesResultado);
+            MostrarTabelaCobertura(Mintermos, ExpressoesResultado);
         }
     }
 }
