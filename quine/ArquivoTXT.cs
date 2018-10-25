@@ -50,40 +50,15 @@ namespace quine
             var numeroMintermos = 0;
             ultimoMintermo = Convert.ToInt32(ultimoMintermoAux);
 
-            /* Quando tem 3 variaveis */
-            if (ultimoMintermo >= 3 && ultimoMintermo < 8)
+            for (int i = 1; i < 1000000000; i++)
             {
-                numeroMintermos = 8;
+                if (ultimoMintermo >= Math.Pow(2, i) && ultimoMintermo < Math.Pow(2, i + 1))
+                {
+                    numeroMintermos = Convert.ToInt32(Math.Pow(2, i + 1));
+                    break;
+                }
             }
-            else if (ultimoMintermo >= 8 && ultimoMintermo < 16)
-            {
-                numeroMintermos = 16;
-            }
-            else if (ultimoMintermo >= 16 && ultimoMintermo < 32)
-            {
-                numeroMintermos = 32;
-            }
-            else if (ultimoMintermo >= 32 && ultimoMintermo < 64)
-            {
-                numeroMintermos = 64;
-            }
-            else if (ultimoMintermo >= 64 && ultimoMintermo < 128)
-            {
-                numeroMintermos = 128;
-            }
-            else if (ultimoMintermo >= 128 && ultimoMintermo < 256)
-            {
-                numeroMintermos = 256;
-            }
-            else if (ultimoMintermo >= 256 && ultimoMintermo < 512)
-            {
-                numeroMintermos = 512;
-            }
-            else if (ultimoMintermo >= 512 && ultimoMintermo < 1024)
-            {
-                numeroMintermos = 1024;
-            }
-
+            
             return numeroMintermos;
         }
 
@@ -243,6 +218,5 @@ namespace quine
             
             return ResultadoMintermos;
         }
-
     }
 }
