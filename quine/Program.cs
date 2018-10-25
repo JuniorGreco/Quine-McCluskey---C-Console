@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace quine
 {
@@ -338,7 +335,7 @@ namespace quine
             }
         }
 
-        private static void MostrarTabelaCobertura(List<Mintermo> Mintermos, List<Coluna> ExpressoesResultado)
+        private static void TransportarParaTabelaCobertura(List<Mintermo> Mintermos, List<Coluna> ExpressoesResultado)
         {
             List<int> TabelaCobertura = new List<int>();
             Boolean estaCoberto = false;
@@ -477,32 +474,7 @@ namespace quine
                 }
             }
         }
-
-        private static void FinalizarAlgoritmo(List<int> TabelaCobertura, List<Coluna> ExpressoesResultado)
-        {
-            foreach (var expressao in ExpressoesResultado)
-            {
-                foreach (var mintermo in expressao.Mintermos)
-                {
-                    if (TabelaCobertura.Contains(mintermo))
-                    {
-                        expressao.Marcado = true;
-                        TabelaCobertura.Remove(mintermo);
-                    }
-                }
-            }
-
-            Console.WriteLine("Resultado final:");
-
-            foreach (var expressao in ExpressoesResultado)
-            {
-                if (expressao.Marcado)
-                {
-                    Console.WriteLine(expressao.Variaveis);
-                }
-            }
-        }
-
+        
         private static void QuineMcCluskey(List<Mintermo> Mintermos)
         {
             Console.WriteLine("Algoritmo de Quine McCluskey");
@@ -513,7 +485,7 @@ namespace quine
 
             RodaAlgoritmo(MatrizColunasUns, MatrizColunasComparacao);
 
-            MostrarTabelaCobertura(Mintermos, ExpressoesResultado);
+            TransportarParaTabelaCobertura(Mintermos, ExpressoesResultado);
         }
     }
 }
