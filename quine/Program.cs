@@ -14,12 +14,12 @@ namespace quine
         static void Main(string[] args)
         {
             List<Mintermo> ListaMintermos = CarregarMintermosDoTXT();
-            
+
             QuineMcCluskey(ListaMintermos);
-            
+
             Console.ReadLine();
         }
-        
+
         public static List<Mintermo> CarregarMintermosDoTXT()
         {
             ArquivoTXT arquivo = new ArquivoTXT(@"\MapaKarnaugh.txt");
@@ -31,25 +31,11 @@ namespace quine
             return ListaMintermos;
         }
 
-        private static List<List<Mintermo>> CriarMatrizMintermos()
-        {
-            List<List<Mintermo>> MatrizMintermos = new List<List<Mintermo>>();
-
-            for (int i = 0; i <= numVariaveis; i++)
-            {
-                List<Mintermo> listaColunas = new List<Mintermo>();
-
-                MatrizMintermos.Add(listaColunas);
-            }
-
-            return MatrizMintermos;
-        }
-
-        private static List<List<List<Coluna>>> CriarMatrizColunas()
+        private static List<List<List<Coluna>>> CriarMatrizColunas(List<List<Mintermo>> MatrizColunasUns)
         {
             List<List<List<Coluna>>> MatrizColunasComparacao = new List<List<List<Coluna>>>();
 
-            for (int i = 0; i < numVariaveis; i++)
+            for (int i = 0; i < MatrizColunasUns.Count-1; i++)
             {
                 List<List<Coluna>> listaColunas = new List<List<Coluna>>();
 
@@ -59,8 +45,17 @@ namespace quine
             return MatrizColunasComparacao;
         }
 
-        private static List<List<Mintermo>> SepararColunasUns(List<Mintermo> Mintermos, List<List<Mintermo>> MatrizColunasUns)
+        private static List<List<Mintermo>> SepararColunasUns(List<Mintermo> Mintermos)
         {
+            List<List<Mintermo>> MatrizColunasUns = new List<List<Mintermo>>();
+
+            for (int i = 0; i <= numVariaveis; i++)
+            {
+                List<Mintermo> listaColunas = new List<Mintermo>();
+
+                MatrizColunasUns.Add(listaColunas);
+            }
+
             foreach (var mintermo in Mintermos)
             {
                 if (mintermo.Valor == 1 || mintermo.Valor == 2)
@@ -101,7 +96,25 @@ namespace quine
                     }
                 }
             }
-            
+
+            Boolean temZerado = true;
+
+            while (temZerado)
+            {
+                temZerado = false;
+
+                foreach (var Coluna in MatrizColunasUns)
+                {
+                    if (Coluna.Count == 0)
+                    {
+                        MatrizColunasUns.Remove(Coluna);
+                        temZerado = true;
+
+                        break;
+                    }
+                }
+            }
+
             ImprimirColunasUns(MatrizColunasUns); /* Imprime as Colunas de Uns */
 
             return MatrizColunasUns;
@@ -109,61 +122,161 @@ namespace quine
 
         private static void ImprimirColunasUns(List<List<Mintermo>> MatrizMintermos)
         {
-            foreach (var mintermo in MatrizMintermos[0])
+            var contadorLista = 0;
+
+            foreach (var listaMintermos in MatrizMintermos)
             {
-                Console.WriteLine("Conjunto 0: " + mintermo.Variaveis);
-            }
+                foreach (var mintermo in listaMintermos)
+                {
+                    Console.WriteLine("Conjunto de '" + contadorLista + "' uns lógicos: " + mintermo.Variaveis + "(" + mintermo.Posicao + ")");
+                }
 
-            Console.WriteLine();
+                Console.WriteLine();
 
-            foreach (var mintermo in MatrizMintermos[1])
-            {
-                Console.WriteLine("Conjunto 1: " + mintermo.Variaveis);
-            }
-
-            Console.WriteLine();
-
-            foreach (var mintermo in MatrizMintermos[2])
-            {
-                Console.WriteLine("Conjunto 2: " + mintermo.Variaveis);
-            }
-
-            Console.WriteLine();
-
-            foreach (var mintermo in MatrizMintermos[3])
-            {
-                Console.WriteLine("Conjunto 3: " + mintermo.Variaveis);
-            }
-
-            Console.WriteLine();
-
-            foreach (var mintermo in MatrizMintermos[4])
-            {
-                Console.WriteLine("Conjunto 4: " + mintermo.Variaveis);
-            }
-
-            Console.WriteLine();
-
-            foreach (var mintermo in MatrizMintermos[5])
-            {
-                Console.WriteLine("Conjunto 5: " + mintermo.Variaveis);
+                contadorLista += 1;
             }
 
         }
 
-        private static void RodaAlgoritmo(List<List<Mintermo>> MatrizMintermos, List<List<List<Coluna>>> MatrizColunas)
+        private static void RodaAlgoritmo(List<List<Mintermo>> MatrizColunasUns, List<List<List<Coluna>>> MatrizColunasComparacao)
         {
+            var numeroConjuntos = MatrizColunasUns.Count-1;
+
+            for (int i = 0; i < MatrizColunasUns.Count -1; i++)
+            {
+                for (int j = 0; j < numeroConjuntos; j++)
+                {
+                    List<Coluna> ListaConjuntos = new List<Coluna>();
+                    MatrizColunasComparacao[i].Add(ListaConjuntos);
+                }
+
+                numeroConjuntos -= 1;
+            }
+
             List<Coluna> ColunaA1 = new List<Coluna>();
             List<Coluna> ColunaA2 = new List<Coluna>();
             List<Coluna> ColunaA3 = new List<Coluna>();
             List<Coluna> ColunaA4 = new List<Coluna>();
 
-            foreach (var mintermo in MatrizMintermos[0])
+            // For que preenche a primeira Coluna da Matriz, a partir das Colunas de 1's
+            for (int i = 0; i < MatrizColunasUns.Count; i++)
+            { 
+                if (i + 1 < MatrizColunasUns.Count)
+                {
+                    foreach (var mintermo in MatrizColunasUns[i])
+                    {
+                        foreach (var mintermoAux in MatrizColunasUns[i + 1])
+                        {
+                            string variaveisAux = "";
+                            short contador = 0;
+
+                            for (int j = 0; j < numVariaveis; j++)
+                            {
+                                var caracter = mintermo.Variaveis.Substring(j, 1);
+                                var caracterAux = mintermoAux.Variaveis.Substring(j, 1);
+
+                                if (caracter == caracterAux)
+                                {
+                                    variaveisAux += caracter;
+                                }
+                                else
+                                {
+                                    variaveisAux += "_";
+                                    contador += 1;
+                                }
+                            }
+
+                            if (contador == 1)
+                            {
+                                Coluna coluna = new Coluna();
+                                coluna.Variaveis = variaveisAux;
+
+                                coluna.Mintermos.Add(mintermo.Posicao);
+                                coluna.Mintermos.Add(mintermoAux.Posicao);
+
+                                MatrizColunasComparacao[0][i].Add(coluna);
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            var numeroDiferencas = 1;
+
+            for (int i = 0; i < MatrizColunasComparacao.Count-1; i++)
             {
-                foreach (var mintermoAux in MatrizMintermos[1])
+                numeroDiferencas += 1;
+
+                if (i + 1 < MatrizColunasComparacao.Count)
+                {
+                    for (int j = 0; j < MatrizColunasComparacao[j].Count; j++)
+                    {
+                        for (int g = 0; g < MatrizColunasComparacao[i][j].Count; g++)
+                        {
+                            var mintermo = MatrizColunasComparacao[i][j][g];
+
+                            for (int d = 0; d < MatrizColunasComparacao[i][j+1].Count; d++)
+                            {
+                                var mintermoAux = MatrizColunasComparacao[i][j+1][d];
+
+                                string variaveisAux = "";
+                                short contador = 0;
+
+                                for (int k = 0; k < numVariaveis; k++)
+                                {
+                                    var caracter = mintermo.Variaveis.Substring(k, 1);
+                                    var caracterAux = mintermoAux.Variaveis.Substring(k, 1);
+
+                                    if (caracter == caracterAux)
+                                    {
+                                        variaveisAux += caracter;
+                                    }
+                                    else
+                                    {
+                                        if (caracter != "_" && caracterAux != "1" || caracter != "_" && caracterAux != "0" || caracterAux != "_" && caracter != "1" || caracterAux != "_" && caracter != "0")
+                                        {
+                                            variaveisAux += "_";
+                                            contador += 1;
+                                        }
+                                    }
+                                }
+
+                                if (contador == numeroDiferencas)
+                                {
+                                    Coluna coluna = new Coluna();
+                                    coluna.Variaveis = variaveisAux;
+
+                                    var naoTem = false;
+
+                                    foreach (var item in MatrizColunasComparacao[i + 1][j])
+                                    {
+                                        if (variaveisAux == item.Variaveis)
+                                        {
+                                            naoTem = true;
+                                        }
+                                    }
+                                    
+                                    if (!naoTem)
+                                        MatrizColunasComparacao[i + 1][j].Add(coluna);
+
+                                    //if (MatrizColunasComparacao[i + 1][j].Contains(coluna) == false)
+                                    
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            
+
+            foreach (var mintermo in MatrizColunasUns[0])
+            {
+                foreach (var mintermoAux in MatrizColunasUns[1])
                 {
                     string variaveisAux = "";
-                    Int16 contador = 0;
+                    short contador = 0;
 
                     for (int i = 0; i < numVariaveis; i++)
                     {
@@ -194,9 +307,9 @@ namespace quine
                 }
             }
 
-            foreach (var mintermo in MatrizMintermos[1])
+            foreach (var mintermo in MatrizColunasUns[1])
             {
-                foreach (var mintermoAux in MatrizMintermos[2])
+                foreach (var mintermoAux in MatrizColunasUns[2])
                 {
                     string variaveisAux = "";
                     Int16 contador = 0;
@@ -230,9 +343,9 @@ namespace quine
                 }
             }
 
-            foreach (var mintermo in MatrizMintermos[2])
+            foreach (var mintermo in MatrizColunasUns[2])
             {
-                foreach (var mintermoAux in MatrizMintermos[3])
+                foreach (var mintermoAux in MatrizColunasUns[3])
                 {
                     string variaveisAux = "";
                     Int16 contador = 0;
@@ -266,9 +379,9 @@ namespace quine
                 }
             }
 
-            foreach (var mintermo in MatrizMintermos[3])
+            foreach (var mintermo in MatrizColunasUns[3])
             {
-                foreach (var mintermoAux in MatrizMintermos[4])
+                foreach (var mintermoAux in MatrizColunasUns[4])
                 {
                     string variaveisAux = "";
                     Int16 contador = 0;
@@ -301,6 +414,13 @@ namespace quine
                     }
                 }
             }
+            
+            MatrizColunasComparacao[0].Add(ColunaA1);
+            MatrizColunasComparacao[0].Add(ColunaA2);
+            MatrizColunasComparacao[0].Add(ColunaA3);
+            MatrizColunasComparacao[0].Add(ColunaA4);
+
+            FazerColunas2(MatrizColunasComparacao);
 
             // ---------------------------------------------
 
@@ -375,13 +495,7 @@ namespace quine
 
                 Console.WriteLine();
             }
-
-            MatrizColunas[0].Add(ColunaA1);
-            MatrizColunas[0].Add(ColunaA2);
-            MatrizColunas[0].Add(ColunaA3);
-            MatrizColunas[0].Add(ColunaA4);
-
-            FazerColunas2(MatrizColunas);
+            
         }
 
         private static void FazerColunas2(List<List<List<Coluna>>> MatrizColunas)
@@ -586,7 +700,7 @@ namespace quine
             MatrizColunas[1].Add(ColunaB3);
 
             // ----------------------------------------
-            
+
             Console.WriteLine();
             Console.WriteLine();
             Console.Write("Coluna B1 ");
@@ -840,7 +954,7 @@ namespace quine
                 }
             }
         }
-        
+
         private static List<int> FazerTabelaCobertura(List<Mintermo> Mintermos, ref List<Coluna> ExpressoesResultado)
         {
             List<int> TabelaCobertura = new List<int>();
@@ -882,10 +996,10 @@ namespace quine
                     if (ehDontCare == true)
                     {
                         if (!DontCares.Contains(mintermo))
-                        DontCares.Add(mintermo);
+                            DontCares.Add(mintermo);
                     }
                 }
-                
+
             }
 
             Boolean terminouDontCares = false;
@@ -938,7 +1052,7 @@ namespace quine
                             ehMaior = false;
 
                     }
-                    
+
                     if (ehMaior == true)
                     {
                         Conjuntos.Add(expressao);
@@ -954,7 +1068,7 @@ namespace quine
             return TabelaCobertura;
         }
 
-        private static void FinalizarAlgoritmo(List<int> TabelaCobertura, List<Coluna>ExpressoesResultado)
+        private static void FinalizarAlgoritmo(List<int> TabelaCobertura, List<Coluna> ExpressoesResultado)
         {
             foreach (var expressao in ExpressoesResultado)
             {
@@ -969,7 +1083,7 @@ namespace quine
             }
 
             Console.WriteLine("Resultado final:");
-            
+
             foreach (var expressao in ExpressoesResultado)
             {
                 if (expressao.Marcado)
@@ -981,15 +1095,16 @@ namespace quine
 
         private static void QuineMcCluskey(List<Mintermo> Mintermos)
         {
-            List<List<Mintermo>> MatrizColunasUns = CriarMatrizMintermos(); /* Aloca memória */
+            Console.WriteLine("Algoritmo de Quine McCluskey");
+            Console.WriteLine();
 
-            List<List<List<Coluna>>> MatrizColunasComparacao = CriarMatrizColunas(); /* Aloca memória */
+            List<List<Mintermo>> MatrizColunasUns = SepararColunasUns(Mintermos); /* Aloca memória */
 
-            MatrizColunasUns = SepararColunasUns(Mintermos, MatrizColunasUns); /* Aloca memória */
+            List<List<List<Coluna>>> MatrizColunasComparacao = CriarMatrizColunas(MatrizColunasUns); /* Aloca memória */
 
             RodaAlgoritmo(MatrizColunasUns, MatrizColunasComparacao);
 
-            List <int> TabelaCobertura = FazerTabelaCobertura(Mintermos,ref ExpressoesResultado);
+            List<int> TabelaCobertura = FazerTabelaCobertura(Mintermos, ref ExpressoesResultado);
 
             Console.WriteLine();
             Console.WriteLine();
