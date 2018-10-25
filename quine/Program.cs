@@ -206,8 +206,6 @@ namespace quine
 
             for (int i = 0; i < MatrizColunasComparacao.Count-1; i++)
             {
-                numeroDiferencas += 1;
-
                 if (i + 1 < MatrizColunasComparacao.Count)
                 {
                     for (int j = 0; j < MatrizColunasComparacao[j].Count; j++)
@@ -234,11 +232,11 @@ namespace quine
                                     }
                                     else
                                     {
-                                        if (caracter != "_" && caracterAux != "1" || caracter != "_" && caracterAux != "0" || caracterAux != "_" && caracter != "1" || caracterAux != "_" && caracter != "0")
-                                        {
+                                        //if (caracter != "_" && caracterAux != "1" || caracter != "_" && caracterAux != "0" || caracterAux != "_" && caracter != "1" || caracterAux != "_" && caracter != "0")
+                                        //{
                                             variaveisAux += "_";
-                                            contador += 1;
-                                        }
+                                           contador += 1;
+                                        //}
                                     }
                                 }
 
