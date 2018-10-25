@@ -35,7 +35,7 @@ namespace quine
         {
             List<List<List<Coluna>>> MatrizColunasComparacao = new List<List<List<Coluna>>>();
 
-            for (int i = 0; i < MatrizColunasUns.Count-1; i++)
+            for (int i = 0; i < MatrizColunasUns.Count - 1; i++)
             {
                 List<List<Coluna>> listaColunas = new List<List<Coluna>>();
 
@@ -115,34 +115,40 @@ namespace quine
                 }
             }
 
-            ImprimirColunasUns(MatrizColunasUns); /* Imprime as Colunas de Uns */
+            ImprimirUnsAgrupados(MatrizColunasUns); /* Imprime as Colunas de Uns */
 
             return MatrizColunasUns;
         }
 
-        private static void ImprimirColunasUns(List<List<Mintermo>> MatrizMintermos)
+        private static void ImprimirUnsAgrupados(List<List<Mintermo>> MatrizMintermos)
         {
             var contadorLista = 0;
 
+            Console.WriteLine();
+            Console.WriteLine("*******************************************************************");
+            Console.WriteLine("Conjuntos de uns agrupados");
+            Console.WriteLine("-------------------------------------------------------------------");
+
             foreach (var listaMintermos in MatrizMintermos)
             {
-                foreach (var mintermo in listaMintermos)
-                {
-                    Console.WriteLine("Conjunto de '" + contadorLista + "' uns lógicos: " + mintermo.Variaveis + "(" + mintermo.Posicao + ")");
-                }
-
                 Console.WriteLine();
 
+                foreach (var mintermo in listaMintermos)
+                {
+                    Console.WriteLine("'" + contadorLista + "' - " + mintermo.Variaveis + "(" + mintermo.Posicao + ")");
+                }
+                
                 contadorLista += 1;
             }
 
+            Console.WriteLine("-------------------------------------------------------------------");
         }
 
         private static void RodaAlgoritmo(List<List<Mintermo>> MatrizColunasUns, List<List<List<Coluna>>> MatrizColunasComparacao)
         {
-            var numeroConjuntos = MatrizColunasUns.Count-1;
+            var numeroConjuntos = MatrizColunasUns.Count - 1;
 
-            for (int i = 0; i < MatrizColunasUns.Count -1; i++)
+            for (int i = 0; i < MatrizColunasUns.Count - 1; i++)
             {
                 for (int j = 0; j < numeroConjuntos; j++)
                 {
@@ -152,20 +158,15 @@ namespace quine
 
                 numeroConjuntos -= 1;
             }
-
-            List<Coluna> ColunaA1 = new List<Coluna>();
-            List<Coluna> ColunaA2 = new List<Coluna>();
-            List<Coluna> ColunaA3 = new List<Coluna>();
-            List<Coluna> ColunaA4 = new List<Coluna>();
-
+            
             // For que preenche a primeira Coluna da Matriz, a partir das Colunas de 1's
             for (int i = 0; i < MatrizColunasUns.Count; i++)
-            { 
+            {
                 if (i + 1 < MatrizColunasUns.Count)
                 {
-                    foreach (var mintermo in MatrizColunasUns[i])
+                    foreach (Mintermo mintermo in MatrizColunasUns[i])
                     {
-                        foreach (var mintermoAux in MatrizColunasUns[i + 1])
+                        foreach (Mintermo mintermoAux in MatrizColunasUns[i + 1])
                         {
                             string variaveisAux = "";
                             short contador = 0;
@@ -204,28 +205,27 @@ namespace quine
 
             var numeroDiferencas = 1;
 
-            for (int i = 0; i < MatrizColunasComparacao.Count-1; i++)
+            for (int i = 0; i < MatrizColunasComparacao.Count - 1; i++) // For mais externo, de acordo com o número de colunas..
             {
-                //if (i + 1 < MatrizColunasComparacao.Count)
-                //{
-                    for (int j = 0; j < MatrizColunasComparacao[j].Count; j++)
+                for (int j = 0; j < MatrizColunasComparacao[i].Count; j++)
+                {
+                    if (j + 1 < MatrizColunasComparacao[i].Count)
                     {
-                        for (int g = 0; g < MatrizColunasComparacao[i][j].Count; g++)
+                        for (int k = 0; k < MatrizColunasComparacao[i][j].Count; k++)
                         {
-                            var mintermo = MatrizColunasComparacao[i][j][g];
-                            
-                            for (int d = 0; d < MatrizColunasComparacao[i][j+1].Count; d++)
+                            var ColunaMintermos = MatrizColunasComparacao[i][j][k];
+
+                            for (int h = 0; h < MatrizColunasComparacao[i][j + 1].Count; h++)
                             {
-                                var mintermoAux = MatrizColunasComparacao[i][j+1][d];
-                                var eu = mintermo.Variaveis; //
-                                var eu2 = mintermoAux.Variaveis; //
+                                var ColunaMintermosAux = MatrizColunasComparacao[i][j + 1][h];
+
                                 string variaveisAux = "";
                                 short contador = 0;
 
-                                for (int k = 0; k < numVariaveis; k++)
+                                for (int quantCaracteres = 0; quantCaracteres < numVariaveis; quantCaracteres++)
                                 {
-                                    var caracter = mintermo.Variaveis.Substring(k, 1);
-                                    var caracterAux = mintermoAux.Variaveis.Substring(k, 1);
+                                    var caracter = ColunaMintermos.Variaveis.Substring(quantCaracteres, 1);
+                                    var caracterAux = ColunaMintermosAux.Variaveis.Substring(quantCaracteres, 1);
 
                                     if (caracter == caracterAux)
                                     {
@@ -233,11 +233,8 @@ namespace quine
                                     }
                                     else
                                     {
-                                        //if (caracter != "_" && caracterAux != "1" || caracter != "_" && caracterAux != "0" || caracterAux != "_" && caracter != "1" || caracterAux != "_" && caracter != "0")
-                                        //{
-                                           variaveisAux += "_";
-                                           contador += 1;
-                                        //}
+                                        variaveisAux += "_";
+                                        contador += 1;
                                     }
                                 }
 
@@ -255,699 +252,76 @@ namespace quine
                                             naoTem = true;
                                         }
                                     }
-                                    
+
                                     if (!naoTem)
+                                    {
+                                        foreach (var mintermo in ColunaMintermos.Mintermos)
+                                        {
+                                            coluna.Mintermos.Add(mintermo);
+                                        }
+
+                                        foreach (var mintermoAux in ColunaMintermosAux.Mintermos)
+                                        {
+                                            coluna.Mintermos.Add(mintermoAux);
+                                        }
+
                                         MatrizColunasComparacao[i + 1][j].Add(coluna);
-                                    
+                                    }
                                 }
                             }
-                            //g++;
                         }
-                    }
-                //}
-            }
-            
-
-            foreach (var mintermo in MatrizColunasUns[0])
-            {
-                foreach (var mintermoAux in MatrizColunasUns[1])
-                {
-                    string variaveisAux = "";
-                    short contador = 0;
-
-                    for (int i = 0; i < numVariaveis; i++)
-                    {
-                        var caracter = mintermo.Variaveis.Substring(i, 1);
-                        var caracterAux = mintermoAux.Variaveis.Substring(i, 1);
-
-                        if (caracter == caracterAux)
-                        {
-                            variaveisAux += caracter;
-                        }
-                        else
-                        {
-                            variaveisAux += "_";
-                            contador += 1;
-                        }
-                    }
-
-                    if (contador == 1)
-                    {
-                        Coluna coluna = new Coluna();
-                        coluna.Variaveis = variaveisAux;
-
-                        coluna.Mintermos.Add(mintermo.Posicao);
-                        coluna.Mintermos.Add(mintermoAux.Posicao);
-
-                        ColunaA1.Add(coluna);
                     }
                 }
             }
 
-            foreach (var mintermo in MatrizColunasUns[1])
-            {
-                foreach (var mintermoAux in MatrizColunasUns[2])
-                {
-                    string variaveisAux = "";
-                    Int16 contador = 0;
-
-                    for (int i = 0; i < numVariaveis; i++)
-                    {
-                        var caracter = mintermo.Variaveis.Substring(i, 1);
-                        var caracterAux = mintermoAux.Variaveis.Substring(i, 1);
-
-                        if (caracter == caracterAux)
-                        {
-                            variaveisAux += caracter;
-                        }
-                        else
-                        {
-                            variaveisAux += "_";
-                            contador += 1;
-                        }
-                    }
-
-                    if (contador == 1)
-                    {
-                        Coluna coluna = new Coluna();
-                        coluna.Variaveis = variaveisAux;
-
-                        coluna.Mintermos.Add(mintermo.Posicao);
-                        coluna.Mintermos.Add(mintermoAux.Posicao);
-
-                        ColunaA2.Add(coluna);
-                    }
-                }
-            }
-
-            foreach (var mintermo in MatrizColunasUns[2])
-            {
-                foreach (var mintermoAux in MatrizColunasUns[3])
-                {
-                    string variaveisAux = "";
-                    Int16 contador = 0;
-
-                    for (int i = 0; i < numVariaveis; i++)
-                    {
-                        var caracter = mintermo.Variaveis.Substring(i, 1);
-                        var caracterAux = mintermoAux.Variaveis.Substring(i, 1);
-
-                        if (caracter == caracterAux)
-                        {
-                            variaveisAux += caracter;
-                        }
-                        else
-                        {
-                            variaveisAux += "_";
-                            contador += 1;
-                        }
-                    }
-
-                    if (contador == 1)
-                    {
-                        Coluna coluna = new Coluna();
-                        coluna.Variaveis = variaveisAux;
-
-                        coluna.Mintermos.Add(mintermo.Posicao);
-                        coluna.Mintermos.Add(mintermoAux.Posicao);
-
-                        ColunaA3.Add(coluna);
-                    }
-                }
-            }
-
-            foreach (var mintermo in MatrizColunasUns[3])
-            {
-                foreach (var mintermoAux in MatrizColunasUns[4])
-                {
-                    string variaveisAux = "";
-                    Int16 contador = 0;
-
-                    for (int i = 0; i < numVariaveis; i++)
-                    {
-                        var caracter = mintermo.Variaveis.Substring(i, 1);
-                        var caracterAux = mintermoAux.Variaveis.Substring(i, 1);
-
-                        if (caracter == caracterAux)
-                        {
-                            variaveisAux += caracter;
-                        }
-                        else
-                        {
-                            variaveisAux += "_";
-                            contador += 1;
-                        }
-                    }
-
-                    if (contador == 1)
-                    {
-                        Coluna coluna = new Coluna();
-                        coluna.Variaveis = variaveisAux;
-
-                        coluna.Mintermos.Add(mintermo.Posicao);
-                        coluna.Mintermos.Add(mintermoAux.Posicao);
-
-                        ColunaA4.Add(coluna);
-                    }
-                }
-            }
-            
-            MatrizColunasComparacao[0].Add(ColunaA1);
-            MatrizColunasComparacao[0].Add(ColunaA2);
-            MatrizColunasComparacao[0].Add(ColunaA3);
-            MatrizColunasComparacao[0].Add(ColunaA4);
-
-            FazerColunas2(MatrizColunasComparacao);
-
-            // ---------------------------------------------
-
-            Console.WriteLine();
-            Console.Write("Coluna A1 ");
-            Console.WriteLine();
-
-            foreach (var elemento in ColunaA1)
-            {
-                Console.Write("Mintermos:");
-
-                foreach (var mintermo in elemento.Mintermos)
-                {
-                    Console.Write(" " + mintermo);
-                }
-
-                Console.Write(" Elemento: " + elemento.Variaveis);
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
-            Console.Write("Coluna A2 ");
-            Console.WriteLine();
-
-            foreach (var elemento in ColunaA2)
-            {
-                Console.Write("Mintermos:");
-
-                foreach (var mintermo in elemento.Mintermos)
-                {
-                    Console.Write(" " + mintermo);
-                }
-
-                Console.Write(" Elemento: " + elemento.Variaveis);
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
-            Console.Write("Coluna A3 ");
-            Console.WriteLine();
-
-            foreach (var elemento in ColunaA3)
-            {
-                Console.Write("Mintermos:");
-
-                foreach (var mintermo in elemento.Mintermos)
-                {
-                    Console.Write(" " + mintermo);
-                }
-
-                Console.Write(" Elemento: " + elemento.Variaveis);
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
-            Console.Write("Coluna A4 ");
-            Console.WriteLine();
-
-            foreach (var elemento in ColunaA4)
-            {
-                Console.Write("Mintermos:");
-
-                foreach (var mintermo in elemento.Mintermos)
-                {
-                    Console.Write(" " + mintermo);
-                }
-
-                Console.Write(" Elemento: " + elemento.Variaveis);
-
-                Console.WriteLine();
-            }
-            
-        }
-
-        private static void FazerColunas2(List<List<List<Coluna>>> MatrizColunas)
-        {
-            List<Coluna> ColunaB1 = new List<Coluna>();
-            List<Coluna> ColunaB2 = new List<Coluna>();
-            List<Coluna> ColunaB3 = new List<Coluna>();
-
-            foreach (var mintermo in MatrizColunas[0][0])
-            {
-                foreach (var mintermoAux in MatrizColunas[0][1])
-                {
-                    string variaveisAux = "";
-                    Int16 contador = 0;
-
-                    for (int i = 0; i < numVariaveis; i++)
-                    {
-                        var caracter = mintermo.Variaveis.Substring(i, 1);
-                        var caracterAux = mintermoAux.Variaveis.Substring(i, 1);
-
-                        if (caracter == caracterAux)
-                        {
-                            variaveisAux += caracter;
-                        }
-                        else if (caracter != "_" || caracterAux != "_")
-                        {
-                            variaveisAux += "_";
-                            contador += 1;
-                        }
-                        else
-                        {
-                            contador += 1;
-                        }
-                    }
-
-                    if (contador == 1)
-                    {
-                        Coluna coluna = new Coluna();
-
-                        Boolean teste = true;
-
-
-                        foreach (var elemento in ColunaB1)
-                        {
-                            if (variaveisAux == elemento.Variaveis)
-                            {
-                                teste = false;
-                            }
-                        }
-
-                        if (teste)
-                        {
-                            coluna.Variaveis = variaveisAux;
-
-                            foreach (var variavel in mintermo.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-                            foreach (var variavel in mintermoAux.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-
-                            ColunaB1.Add(coluna);
-                        }
-
-                        mintermo.Marcado = true;
-                        mintermoAux.Marcado = true;
-                    }
-                }
-            }
-
-            foreach (var mintermo in MatrizColunas[0][1])
-            {
-                foreach (var mintermoAux in MatrizColunas[0][2])
-                {
-                    string variaveisAux = "";
-                    Int16 contador = 0;
-
-                    for (int i = 0; i < numVariaveis; i++)
-                    {
-                        var caracter = mintermo.Variaveis.Substring(i, 1);
-                        var caracterAux = mintermoAux.Variaveis.Substring(i, 1);
-
-                        if (caracter == caracterAux)
-                        {
-                            variaveisAux += caracter;
-                        }
-                        else if (caracter != "_" || caracterAux != "_")
-                        {
-                            variaveisAux += "_";
-                            contador += 1;
-                        }
-                        else
-                        {
-                            contador += 1;
-                        }
-                    }
-
-                    if (contador == 1)
-                    {
-                        Coluna coluna = new Coluna();
-
-                        Boolean teste = true;
-
-
-                        foreach (var elemento in ColunaB2)
-                        {
-                            if (variaveisAux == elemento.Variaveis)
-                            {
-                                teste = false;
-                            }
-                        }
-
-                        if (teste)
-                        {
-                            coluna.Variaveis = variaveisAux;
-
-                            foreach (var variavel in mintermo.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-                            foreach (var variavel in mintermoAux.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-
-                            ColunaB2.Add(coluna);
-                        }
-
-                        mintermo.Marcado = true;
-                        mintermoAux.Marcado = true;
-                    }
-                }
-            }
-
-            foreach (var mintermo in MatrizColunas[0][2])
-            {
-                foreach (var mintermoAux in MatrizColunas[0][3])
-                {
-                    string variaveisAux = "";
-                    Int16 contador = 0;
-
-                    for (int i = 0; i < numVariaveis; i++)
-                    {
-                        var caracter = mintermo.Variaveis.Substring(i, 1);
-                        var caracterAux = mintermoAux.Variaveis.Substring(i, 1);
-
-                        if (caracter == caracterAux)
-                        {
-                            variaveisAux += caracter;
-                        }
-                        else if (caracter != "_" || caracterAux != "_")
-                        {
-                            variaveisAux += "_";
-                            contador += 1;
-                        }
-                        else
-                        {
-                            contador += 1;
-                        }
-                    }
-
-                    if (contador == 1)
-                    {
-                        Coluna coluna = new Coluna();
-
-                        Boolean teste = true;
-
-                        foreach (var elemento in ColunaB3)
-                        {
-                            if (variaveisAux == elemento.Variaveis)
-                            {
-                                teste = false;
-                            }
-                        }
-
-                        if (teste)
-                        {
-                            coluna.Variaveis = variaveisAux;
-
-                            foreach (var variavel in mintermo.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-                            foreach (var variavel in mintermoAux.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-
-                            ColunaB3.Add(coluna);
-                        }
-
-                        mintermo.Marcado = true;
-                        mintermoAux.Marcado = true;
-                    }
-                }
-            }
-
-            MatrizColunas[1].Add(ColunaB1);
-            MatrizColunas[1].Add(ColunaB2);
-            MatrizColunas[1].Add(ColunaB3);
-
-            // ----------------------------------------
-
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.Write("Coluna B1 ");
-            Console.WriteLine();
-
-            foreach (var elemento in MatrizColunas[1][0])
-            {
-                Console.Write("Mintermos:");
-
-                foreach (var mintermo in elemento.Mintermos)
-                {
-                    Console.Write(" " + mintermo);
-                }
-
-                Console.Write(" Elemento: " + elemento.Variaveis);
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
-            Console.Write("Coluna B2 ");
-            Console.WriteLine();
-
-            foreach (var elemento in MatrizColunas[1][1])
-            {
-                Console.Write("Mintermos:");
-
-                foreach (var mintermo in elemento.Mintermos)
-                {
-                    Console.Write(" " + mintermo);
-                }
-
-                Console.Write(" Elemento: " + elemento.Variaveis);
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
-            Console.Write("Coluna B3 ");
-            Console.WriteLine();
-
-            foreach (var elemento in MatrizColunas[1][2])
-            {
-                Console.Write("Mintermos:");
-
-                foreach (var mintermo in elemento.Mintermos)
-                {
-                    Console.Write(" " + mintermo);
-                }
-
-                Console.Write(" Elemento: " + elemento.Variaveis);
-
-                Console.WriteLine();
-            }
-
-            FazerColunas3(MatrizColunas);
-        }
-
-        private static void FazerColunas3(List<List<List<Coluna>>> MatrizColunas)
-        {
-            List<Coluna> ColunaC1 = new List<Coluna>();
-            List<Coluna> ColunaC2 = new List<Coluna>();
-
-            foreach (var mintermo in MatrizColunas[1][0])
-            {
-                foreach (var mintermoAux in MatrizColunas[1][1])
-                {
-                    string variaveisAux = "";
-                    Int16 contador = 0;
-
-                    for (int i = 0; i < numVariaveis; i++)
-                    {
-                        var caracter = mintermo.Variaveis.Substring(i, 1);
-                        var caracterAux = mintermoAux.Variaveis.Substring(i, 1);
-
-                        if (caracter == caracterAux)
-                        {
-                            variaveisAux += caracter;
-                        }
-                        else if (caracter != "_" || caracterAux != "_")
-                        {
-                            variaveisAux += "_";
-                            contador += 1;
-                        }
-                        else
-                        {
-                            contador += 1;
-                        }
-                    }
-
-                    if (contador == 1)
-                    {
-                        Coluna coluna = new Coluna();
-
-                        Boolean teste = true;
-
-                        foreach (var elemento in ColunaC1)
-                        {
-                            if (variaveisAux == elemento.Variaveis)
-                            {
-                                teste = false;
-                            }
-                        }
-
-                        if (teste)
-                        {
-                            coluna.Variaveis = variaveisAux;
-
-                            foreach (var variavel in mintermo.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-                            foreach (var variavel in mintermoAux.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-
-                            ColunaC1.Add(coluna);
-                        }
-
-                        mintermo.Marcado = true;
-                        mintermoAux.Marcado = true;
-                    }
-                }
-            }
-
-            foreach (var mintermo in MatrizColunas[1][1])
-            {
-                foreach (var mintermoAux in MatrizColunas[1][2])
-                {
-                    string variaveisAux = "";
-                    Int16 contador = 0;
-
-                    for (int i = 0; i < numVariaveis; i++)
-                    {
-                        var caracter = mintermo.Variaveis.Substring(i, 1);
-                        var caracterAux = mintermoAux.Variaveis.Substring(i, 1);
-
-                        if (caracter == caracterAux)
-                        {
-                            variaveisAux += caracter;
-                        }
-                        else if (caracter != "_" || caracterAux != "_")
-                        {
-                            variaveisAux += "_";
-                            contador += 1;
-                        }
-                        else
-                        {
-                            contador += 1;
-                        }
-                    }
-
-                    if (contador == 1)
-                    {
-                        Coluna coluna = new Coluna();
-
-                        Boolean teste = true;
-
-                        foreach (var elemento in ColunaC2)
-                        {
-                            if (variaveisAux == elemento.Variaveis)
-                            {
-                                teste = false;
-                            }
-                        }
-
-                        if (teste)
-                        {
-                            coluna.Variaveis = variaveisAux;
-
-                            foreach (var variavel in mintermo.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-                            foreach (var variavel in mintermoAux.Mintermos)
-                            {
-                                coluna.Mintermos.Add(variavel);
-                            }
-
-                            ColunaC2.Add(coluna);
-                        }
-
-                        mintermo.Marcado = true;
-                        mintermoAux.Marcado = true;
-                    }
-                }
-            }
-
-            MatrizColunas[2].Add(ColunaC1);
-            MatrizColunas[2].Add(ColunaC2);
-
-            // ----------------------------------------------------
-
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.Write("Coluna C1 ");
-            Console.WriteLine();
-
-            foreach (var elemento in MatrizColunas[2][0])
-            {
-                Console.Write("Mintermos:");
-
-                foreach (var mintermo in elemento.Mintermos)
-                {
-                    Console.Write(" " + mintermo);
-                }
-
-                Console.Write(" Elemento: " + elemento.Variaveis);
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
-            Console.Write("Coluna C2 ");
-            Console.WriteLine();
-
-            foreach (var elemento in MatrizColunas[2][1])
-            {
-                Console.Write("Mintermos:");
-
-                foreach (var mintermo in elemento.Mintermos)
-                {
-                    Console.Write(" " + mintermo);
-                }
-
-                Console.Write(" Elemento: " + elemento.Variaveis);
-
-                Console.WriteLine();
-            }
-
-            // ----------------------------------------------------
-
-            Console.WriteLine();
-            Console.WriteLine();
+            ImprimirColunas(MatrizColunasComparacao);
 
             ExpressoesResultado = new List<Coluna>();
 
-            foreach (var listas in MatrizColunas)
+            //foreach (var listas in MatrizColunas)
+            //{
+            //    foreach (var mintermos in listas)
+            //    {
+            //        foreach (var item in mintermos)
+            //        {
+            //            if (!item.Marcado)
+            //            {
+            //                Console.WriteLine("Transportando para a tabela de cobertura: " + item.Variaveis);
+            //                ExpressoesResultado.Add(item);
+            //            }
+            //        }
+            //    }
+            //}
+            
+        }
+        
+        private static void ImprimirColunas(List<List<List<Coluna>>> MatrizColunasComparacao)
+        {
+            string alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            Console.WriteLine();
+            Console.WriteLine("*******************************************************************");
+            Console.WriteLine("Colunas de Comparações");
+            
+            for (int i = 0; i < MatrizColunasComparacao.Count; i++)
             {
-                foreach (var mintermos in listas)
+                Console.WriteLine("-------------------------------------------------------------------");
+
+                for (int j = 0; j < MatrizColunasComparacao[i].Count; j++)
                 {
-                    foreach (var item in mintermos)
+
+                    for (int k = 0; k < MatrizColunasComparacao[i][j].Count; k++)
                     {
-                        if (!item.Marcado)
+                        Console.WriteLine();
+                        Console.Write(alfabeto[i].ToString() + j + " - " + MatrizColunasComparacao[i][j][k].Variaveis);
+                       
+                        foreach (var mintermo in MatrizColunasComparacao[i][j][k].Mintermos)
                         {
-                            Console.WriteLine("Transportando para a tabela de cobertura: " + item.Variaveis);
-                            ExpressoesResultado.Add(item);
+                            Console.Write(" (" + mintermo + ")");
                         }
                     }
+
+                    Console.WriteLine();
                 }
             }
         }
@@ -1079,7 +453,7 @@ namespace quine
                 }
             }
 
-            Console.WriteLine("Resultado final:");
+            //Console.WriteLine("Resultado final:");
 
             foreach (var expressao in ExpressoesResultado)
             {
@@ -1093,7 +467,6 @@ namespace quine
         private static void QuineMcCluskey(List<Mintermo> Mintermos)
         {
             Console.WriteLine("Algoritmo de Quine McCluskey");
-            Console.WriteLine();
 
             List<List<Mintermo>> MatrizColunasUns = SepararColunasUns(Mintermos); /* Aloca memória */
 
@@ -1103,7 +476,6 @@ namespace quine
 
             List<int> TabelaCobertura = FazerTabelaCobertura(Mintermos, ref ExpressoesResultado);
 
-            Console.WriteLine();
             Console.WriteLine();
 
             FinalizarAlgoritmo(TabelaCobertura, ExpressoesResultado);
