@@ -206,18 +206,19 @@ namespace quine
 
             for (int i = 0; i < MatrizColunasComparacao.Count-1; i++)
             {
-                if (i + 1 < MatrizColunasComparacao.Count)
-                {
+                //if (i + 1 < MatrizColunasComparacao.Count)
+                //{
                     for (int j = 0; j < MatrizColunasComparacao[j].Count; j++)
                     {
                         for (int g = 0; g < MatrizColunasComparacao[i][j].Count; g++)
                         {
                             var mintermo = MatrizColunasComparacao[i][j][g];
-
+                            
                             for (int d = 0; d < MatrizColunasComparacao[i][j+1].Count; d++)
                             {
                                 var mintermoAux = MatrizColunasComparacao[i][j+1][d];
-
+                                var eu = mintermo.Variaveis; //
+                                var eu2 = mintermoAux.Variaveis; //
                                 string variaveisAux = "";
                                 short contador = 0;
 
@@ -234,7 +235,7 @@ namespace quine
                                     {
                                         //if (caracter != "_" && caracterAux != "1" || caracter != "_" && caracterAux != "0" || caracterAux != "_" && caracter != "1" || caracterAux != "_" && caracter != "0")
                                         //{
-                                            variaveisAux += "_";
+                                           variaveisAux += "_";
                                            contador += 1;
                                         //}
                                     }
@@ -257,15 +258,13 @@ namespace quine
                                     
                                     if (!naoTem)
                                         MatrizColunasComparacao[i + 1][j].Add(coluna);
-
-                                    //if (MatrizColunasComparacao[i + 1][j].Contains(coluna) == false)
                                     
                                 }
                             }
+                            //g++;
                         }
                     }
-
-                }
+                //}
             }
             
 
