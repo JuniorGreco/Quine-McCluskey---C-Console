@@ -6,14 +6,22 @@ namespace quine
 {
     class ArquivoTXT
     {
-        public string caminhoArquivo;
-
+        private string caminhoArquivo;
         private int numeroVariaveis;
 
         public ArquivoTXT(string caminhoArquivo)
         {
             this.numeroVariaveis = 0;
             this.caminhoArquivo = App_Path() + caminhoArquivo;
+        }
+
+        private string App_Path()
+        {
+            var location = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var appPath = Path.GetDirectoryName(location);
+            var appName = Path.GetFileName(location);
+
+            return appPath;
         }
 
         public int PegarNumeroVariaveis()
@@ -60,15 +68,6 @@ namespace quine
             }
             
             return numeroMintermos;
-        }
-
-        private string App_Path()
-        {
-            var location = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var appPath = Path.GetDirectoryName(location);
-            var appName = Path.GetFileName(location);
-
-            return appPath;
         }
 
         public List<Mintermo> CarregarMintermos()
