@@ -54,3 +54,10 @@ C:\Users\pnjunior\Desktop\Desenvolvimento\quine\obj\Debug\quine.csprojResolveAss
 C:\Users\pnjunior\Desktop\Desenvolvimento\quine\obj\Debug\quine.csproj.CoreCompileInputs.cache
 C:\Users\pnjunior\Desktop\Desenvolvimento\quine\obj\Debug\quine.exe
 C:\Users\pnjunior\Desktop\Desenvolvimento\quine\obj\Debug\quine.pdb
+C:\Users\pnjunior\Desktop\Cliente GitKraken\Quine-McCluskey---C-Console\quine\bin\Debug\quine.exe.config
+C:\Users\pnjunior\Desktop\Cliente GitKraken\Quine-McCluskey---C-Console\quine\bin\Debug\quine.exe
+C:\Users\pnjunior\Desktop\Cliente GitKraken\Quine-McCluskey---C-Console\quine\bin\Debug\quine.pdb
+C:\Users\pnjunior\Desktop\Cliente GitKraken\Quine-McCluskey---C-Console\quine\obj\Debug\quine.csprojResolveAssemblyReference.cache
+C:\Users\pnjunior\Desktop\Cliente GitKraken\Quine-McCluskey---C-Console\quine\obj\Debug\quine.csproj.CoreCompileInputs.cache
+C:\Users\pnjunior\Desktop\Cliente GitKraken\Quine-McCluskey---C-Console\quine\obj\Debug\quine.exe
+C:\Users\pnjunior\Desktop\Cliente GitKraken\Quine-McCluskey---C-Console\quine\obj\Debug\quine.pdb

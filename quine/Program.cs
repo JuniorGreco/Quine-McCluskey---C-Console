@@ -5,8 +5,8 @@ namespace quine
 {
     class Program
     {
-        static int numVariaveis;
-        static List<Coluna> ExpressoesResultado;
+        private static int numVariaveis;
+        private static List<Coluna> ExpressoesResultado;
 
         static void Main(string[] args)
         {
