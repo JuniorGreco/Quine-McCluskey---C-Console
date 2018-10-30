@@ -36,9 +36,7 @@ namespace quine
         private int PegarNumeroMintermos()
         {
             StreamReader arquivoTXT = new StreamReader(caminhoArquivo);
-
-            Boolean ehDontCare = false;
-
+            
             string conteudo = arquivoTXT.ReadLine();
             string ultimoMintermoAux = "";
             string numeroMintermo = "";

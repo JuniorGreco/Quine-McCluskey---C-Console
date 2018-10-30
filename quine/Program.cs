@@ -6,12 +6,13 @@ namespace quine
     class Program
     {
         private static int numVariaveis;
-        private static List<Coluna> ExpressoesNaoSimplificadas;
 
         static void Main(string[] args)
         {
+            // Carrega todos os Mintermos e Don't Cares do arquivo TXT
             List<Mintermo> ColunaMintermos = CarregarMintermosDoTXT();
 
+            // Executa o Método responsável pelo Quine McCluskey
             QuineMcCluskey(ColunaMintermos);
 
             Console.ReadLine();
@@ -21,12 +22,16 @@ namespace quine
         {
             Console.WriteLine("Algoritmo de Quine McCluskey");
 
-            List<List<Mintermo>> ColunaMintermosAgrupados = CriaMatrizColunasMintermosCheia(ColunaMintermos); /* Aloca memória */
+            // Cria uma Coluna/lista de Mintermos ordenados por número de 1's
+            List<List<Mintermo>> ColunaMintermosAgrupados = CriaMatrizColunasMintermosCheia(ColunaMintermos);
 
+            // Cria uma Matriz Tridimensional de Colunas com Mintermos para comparações
             List<List<List<Coluna>>> MatrizColunasComparacao = CriaMatrizColunasComparacaoVazia(ColunaMintermosAgrupados); /* Aloca memória */
 
-            List<Coluna> ExpressoesNaoSimplificadas = RodaAlgoritmo(ColunaMintermosAgrupados, MatrizColunasComparacao);
+            // Roda o algoritmo de comparações e retorna uma lista de Expressões não simplificadas a serem transportadas para a Tabela de Cobertura
+            List<Coluna> ExpressoesNaoSimplificadas = RodaAlgoritmoComparacao(ColunaMintermosAgrupados, MatrizColunasComparacao);
 
+            // Transporta as Expressões não simplificadas para a Tabela de Cobertura e Imprime o resultado na Tela
             TransportaParaTabelaCobertura(ColunaMintermos, ExpressoesNaoSimplificadas);
         }
 
@@ -79,32 +84,66 @@ namespace quine
 
                 Console.WriteLine("-------------------------------------------------------------------");
             }
-            
+
         }
 
         private static void ImprimeExpressoesNaoSimplificadas(List<Coluna> ExpressoesNaoSimplificadas)
         {
+            string alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            Boolean ehPrimeiro = true;
+
             Console.WriteLine();
             Console.WriteLine("*******************************************************************");
             Console.WriteLine("Resultado Parcial: Expressões não simplificadas  -> ->");
             Console.WriteLine();
-            
+
             foreach (var expressao in ExpressoesNaoSimplificadas)
             {
-                Console.WriteLine(expressao.Variaveis);
+                Console.Write(expressao.Variaveis + " (");
+                
+                for (int i = 0; i < expressao.Variaveis.Length; i++)
+                {
+                    if (!ehPrimeiro && expressao.Variaveis[i].ToString() != "_")
+                        Console.Write(" + ");
+
+                    if (expressao.Variaveis[i].ToString() != "_")
+                    {
+                        if (expressao.Variaveis[i].ToString() == "0")
+                        {
+                            ehPrimeiro = false;
+                            Console.Write("!" + alfabeto[i].ToString());
+                        }
+                        else
+                        {
+                            ehPrimeiro = false;
+                            Console.Write(alfabeto[i].ToString());
+                        }
+                    }
+
+                    if (i == expressao.Variaveis.Length - 1)
+                        Console.Write(")");
+                }
+                
+                ehPrimeiro = true;
+                Console.WriteLine();
             }
-            
+
             ImprimeTextoTransportando();
         }
 
         private static void ImprimeTextoTransportando()
         {
             Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("Transportando para Tabela de Cobertura:  -> -> / ->");
         }
 
         private static void ImprimeExpressoesSimplificadas(List<Coluna> ExpressoesSimplificadas)
         {
+            string alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            Boolean ehPrimeiro = true;
+
+            Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("Resultado Final: Expressões simplificadas  ->");
             Console.WriteLine();
@@ -113,7 +152,33 @@ namespace quine
             {
                 if (expressao.Marcado)
                 {
-                    Console.WriteLine(expressao.Variaveis);
+                    Console.Write(expressao.Variaveis + " (");
+
+                    for (int i = 0; i < expressao.Variaveis.Length; i++)
+                    {
+                        if (!ehPrimeiro && expressao.Variaveis[i].ToString() != "_")
+                            Console.Write(" + ");
+
+                        if (expressao.Variaveis[i].ToString() != "_")
+                        {
+                            if (expressao.Variaveis[i].ToString() == "0")
+                            {
+                                ehPrimeiro = false;
+                                Console.Write("!" + alfabeto[i].ToString() );
+                            }
+                            else
+                            {
+                                ehPrimeiro = false;
+                                Console.Write(alfabeto[i].ToString());
+                            }
+                        }
+
+                        if (i == expressao.Variaveis.Length - 1)
+                            Console.Write(")");
+                    }
+
+                    ehPrimeiro = true;
+                    Console.WriteLine();
                 }
             }
 
@@ -256,7 +321,7 @@ namespace quine
             return ColunaMintermos;
         }
 
-        private static List<Coluna> RodaAlgoritmo(List<List<Mintermo>> ColunaMintermosAgrupados, List<List<List<Coluna>>> MatrizColunasComparacao)
+        private static List<Coluna> RodaAlgoritmoComparacao(List<List<Mintermo>> ColunaMintermosAgrupados, List<List<List<Coluna>>> MatrizColunasComparacao)
         {
             var numeroConjuntos = ColunaMintermosAgrupados.Count - 1;
 
@@ -395,8 +460,8 @@ namespace quine
             ImprimeMatrizColunasComparacao(MatrizColunasComparacao);
 
 
-            ExpressoesNaoSimplificadas = new List<Coluna>();
-            
+            List<Coluna> ExpressoesNaoSimplificadas = new List<Coluna>();
+
             foreach (var listas in MatrizColunasComparacao)
             {
                 foreach (var mintermos in listas)
@@ -410,7 +475,7 @@ namespace quine
                     }
                 }
             }
-            
+
             ImprimeExpressoesNaoSimplificadas(ExpressoesNaoSimplificadas);
 
             return ExpressoesNaoSimplificadas;
