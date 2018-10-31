@@ -1,0 +1,8 @@
+
+\.vs/
+
+quine/bin/Debug/quine\.exe
+
+quine/bin/Debug/quine\.pdb
+
+quine/obj/

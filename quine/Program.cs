@@ -7,6 +7,8 @@ namespace quine
     {
         private static int numVariaveis;
 
+        private static string nomeArquivo = @"\MapaKarnaugh.txt";
+
         static void Main(string[] args)
         {
             // Carrega todos os Mintermos e Don't Cares do arquivo TXT
@@ -37,17 +39,19 @@ namespace quine
 
         private static void ImprimeMintermosAgrupados(List<List<Mintermo>> ColunaMintermosAgrupados)
         {
+            // Imprime na Tela os Conjuntos de Mintermos agrupados por quantidade de 1's 
+
             Console.WriteLine();
             Console.WriteLine("*******************************************************************");
             Console.WriteLine("Conjuntos de Mintermos agrupados por quantidade de 1's:  0 | 1 | 2 ");
 
-            for (int numeroMintermos = 0; numeroMintermos < ColunaMintermosAgrupados.Count; numeroMintermos++)
+            for (int numeroMintermo = 0; numeroMintermo < ColunaMintermosAgrupados.Count; numeroMintermo++)
             {
                 Console.WriteLine();
 
-                foreach (var mintermo in ColunaMintermosAgrupados[numeroMintermos])
+                foreach (var mintermo in ColunaMintermosAgrupados[numeroMintermo])
                 {
-                    Console.WriteLine("'" + numeroMintermos + "' - " + mintermo.Variaveis + "(" + mintermo.Posicao + ")");
+                    Console.WriteLine("'" + numeroMintermo + "' - " + mintermo.Variaveis + "(" + mintermo.Posicao + ")");
                 }
 
             }
@@ -57,6 +61,8 @@ namespace quine
 
         private static void ImprimeMatrizColunasComparacao(List<List<List<Coluna>>> MatrizColunasComparacao)
         {
+            // Imprime na Tela as Colunas de Comparação com seus Mintermos
+
             string alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
             Console.WriteLine();
@@ -89,6 +95,8 @@ namespace quine
 
         private static void ImprimeExpressoesNaoSimplificadas(List<Coluna> ExpressoesNaoSimplificadas)
         {
+            // Imprime na Tela todas as Expressões não simplificadas resultante das comparações
+
             string alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             Boolean ehPrimeiro = true;
 
@@ -140,6 +148,8 @@ namespace quine
 
         private static void ImprimeExpressoesSimplificadas(List<Coluna> ExpressoesSimplificadas)
         {
+            // Imprime na Tela todas as Expressões simplificadas resultante do transporte da Tabela de Cobertura
+
             string alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             Boolean ehPrimeiro = true;
 
@@ -187,8 +197,10 @@ namespace quine
 
         private static void TransportaParaTabelaCobertura(List<Mintermo> ColunaMintermos, List<Coluna> ExpressoesNaoSimplificadas)
         {
+            // Coloca na Tabela de Cobertura todas as Expressões não simplificadas, e então separa aquelas que já são cobertas por outras Expressões
+
             List<int> TabelaCobertura = new List<int>();
-            Boolean estaCoberto = false;
+            bool estaCoberto = false;
 
             foreach (var expressao in ExpressoesNaoSimplificadas)
             {
@@ -210,7 +222,7 @@ namespace quine
 
             List<int> DontCares = new List<int>();
 
-            Boolean ehDontCare = true;
+            bool ehDontCare = true;
             foreach (var expressao in ExpressoesNaoSimplificadas)
             {
                 foreach (var mintermo in expressao.Mintermos)
@@ -231,8 +243,8 @@ namespace quine
 
             }
 
-            Boolean terminouDontCares = false;
-            Boolean terminouFor = false;
+            bool terminouDontCares = false;
+            bool terminouFor = false;
 
             var contador = 0;
 
@@ -266,7 +278,7 @@ namespace quine
             }
 
             List<Coluna> Conjuntos = new List<Coluna>();
-            Boolean ehMaior = true;
+            bool ehMaior = true;
 
             while (ExpressoesNaoSimplificadas.Count > 0)
             {
@@ -312,13 +324,67 @@ namespace quine
 
         private static List<Mintermo> CarregarMintermosDoTXT()
         {
-            ArquivoTXT arquivo = new ArquivoTXT(@"\MapaKarnaugh.txt");
+            ArquivoTXT arquivo = new ArquivoTXT(nomeArquivo);
 
             List<Mintermo> ColunaMintermos = arquivo.CarregarMintermos();
 
             numVariaveis = arquivo.PegarNumeroVariaveis();
 
             return ColunaMintermos;
+        }
+
+        private static List<List<Mintermo>> CriaMatrizColunasMintermosCheia(List<Mintermo> ColunaMintermos)
+        {
+            List<List<Mintermo>> ColunaMintermosAgrupados = new List<List<Mintermo>>();
+
+            // '<=' Porque são feitas colunas para os mintermos que não tem 1's
+            for (int i = 0; i <= numVariaveis; i++)
+            {
+                List<Mintermo> listaColunas = new List<Mintermo>();
+
+                ColunaMintermosAgrupados.Add(listaColunas);
+            }
+
+            // Preenche a Matriz de Mintermos de acordo com os 1's
+            foreach (var mintermo in ColunaMintermos)
+            {
+                if (mintermo.Valor == 1 || mintermo.Valor == 2)
+                {
+                    short contadorUnsMintermo = 0;
+
+                    foreach (char caracter in mintermo.Variaveis)
+                    {
+                        if (caracter == '1')
+                        {
+                            contadorUnsMintermo += 1;
+                        }
+                    }
+
+                    ColunaMintermosAgrupados[contadorUnsMintermo].Add(mintermo);
+                }
+            }
+
+            Boolean temZerado = true;
+
+            while (temZerado)
+            {
+                temZerado = false;
+
+                foreach (var Coluna in ColunaMintermosAgrupados)
+                {
+                    if (Coluna.Count == 0)
+                    {
+                        ColunaMintermosAgrupados.Remove(Coluna);
+                        temZerado = true;
+
+                        break;
+                    }
+                }
+            }
+
+            ImprimeMintermosAgrupados(ColunaMintermosAgrupados); /* Imprime as Colunas de Mintermos de forma agrupada no Console */
+
+            return ColunaMintermosAgrupados;
         }
 
         private static List<Coluna> RodaAlgoritmoComparacao(List<List<Mintermo>> ColunaMintermosAgrupados, List<List<List<Coluna>>> MatrizColunasComparacao)
@@ -479,60 +545,6 @@ namespace quine
             ImprimeExpressoesNaoSimplificadas(ExpressoesNaoSimplificadas);
 
             return ExpressoesNaoSimplificadas;
-        }
-
-        private static List<List<Mintermo>> CriaMatrizColunasMintermosCheia(List<Mintermo> ColunaMintermos)
-        {
-            List<List<Mintermo>> ColunaMintermosAgrupados = new List<List<Mintermo>>();
-
-            // '<=' Porque são feitas colunas para os mintermos que não tem 1's
-            for (int i = 0; i <= numVariaveis; i++)
-            {
-                List<Mintermo> listaColunas = new List<Mintermo>();
-
-                ColunaMintermosAgrupados.Add(listaColunas);
-            }
-
-            // Preenche a Matriz de Mintermos de acordo com os 1's
-            foreach (var mintermo in ColunaMintermos)
-            {
-                if (mintermo.Valor == 1 || mintermo.Valor == 2)
-                {
-                    short contadorUnsMintermo = 0;
-
-                    foreach (char caracter in mintermo.Variaveis)
-                    {
-                        if (caracter == '1')
-                        {
-                            contadorUnsMintermo += 1;
-                        }
-                    }
-
-                    ColunaMintermosAgrupados[contadorUnsMintermo].Add(mintermo);
-                }
-            }
-
-            Boolean temZerado = true;
-
-            while (temZerado)
-            {
-                temZerado = false;
-
-                foreach (var Coluna in ColunaMintermosAgrupados)
-                {
-                    if (Coluna.Count == 0)
-                    {
-                        ColunaMintermosAgrupados.Remove(Coluna);
-                        temZerado = true;
-
-                        break;
-                    }
-                }
-            }
-
-            ImprimeMintermosAgrupados(ColunaMintermosAgrupados); /* Imprime as Colunas de Mintermos de forma agrupada no Console */
-
-            return ColunaMintermosAgrupados;
         }
 
         private static List<List<List<Coluna>>> CriaMatrizColunasComparacaoVazia(List<List<Mintermo>> ColunaMintermosAgrupados)
