@@ -1,7 +1,8 @@
-# Quine-McCluskey---C-Console
-Quine McCluskey Algorithm in Console-C #
+# QuineMcCluskey-console-version
 
-Trabalho final da disciplina de Técnicas Digitais.
-A proposta inicial é a de um algoritmo que seja capaz de ler determinada entrada do Mapa de Karnaugh, via arquivo txt e aplique o Algoritmo de Quine McCluskey.
-Em um primeiro momento está sendo utilizado o Console/Windows.
-A ideia de Upgrade de Software é a de fazer uma versão gráfica com mapas de Karnaugh de até pelo menos 10 variáveis.
+O Algoritmo de Quine McCluskey versão Console foi criado para minimizar funções booleanas de até 10 variáveis em um Mapa de Karnaugh.
+É feito em .Net-C# v4.6.1.
+
+O Software faz a leitura de uma determinada entrada do Mapa de Karnaugh via arquivo txt e aplica o Algoritmo de Quine McCluskey, minimizando em uma função booleana e a imprimindo no console.
+
+Já existe a versão gráfica do algoritmo, feita em Windows Forms. Onde é possível selecionar em um mapa de Karnaugh os valores da função e então minimizá-las: https://github.com/JuniorGreco/QuineMcCluskey-graphic-version
